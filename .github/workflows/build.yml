@@ -73,7 +73,12 @@ jobs:
 
       - name: Make distributables
         run: make -f Makefile.release dist
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: dist
+          # v4 no longer merges same-named artifacts across matrix legs the way
+          # v3 did — uploading "dist" from all 3 Go versions in parallel would
+          # fail with a name conflict. Suffix per matrix leg to keep each one
+          # distinct (nothing downloads this artifact by name today, so the
+          # suffix has no other effect).
+          name: dist-${{ matrix.go }}
           path: "dist/*"
